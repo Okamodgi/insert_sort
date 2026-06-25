@@ -4,8 +4,11 @@
 #include <time.h>
 #include <locale.h>
 
-void insertionSort(int* arr, int size, int order) {
+long long insertionSort(int* arr, int size, int order) {
     // order - направление сортировки (1 - по возрастанию, 2 - по убыванию)
+
+    long long swapsCount = 0; // Кол-во перестановок
+
     for (int i = 1; i < size; i++) {
         int key = arr[i];
         int j = i - 1;
@@ -14,16 +17,19 @@ void insertionSort(int* arr, int size, int order) {
             while (j >= 0 && arr[j] > key) {
                 arr[j + 1] = arr[j];
                 j--;
+                swapsCount++;
             }
         }
         else {
             while (j >= 0 && arr[j] < key) {
                 arr[j + 1] = arr[j];
                 j--;
+                swapsCount++;
             }
         }
         arr[j + 1] = key;
     }
+    return swapsCount;
 }
 
 int main() {
@@ -32,41 +38,23 @@ int main() {
 
     printf("--- Сортировка вставками (Insertion Sort) ---\n\n");
 
-    int size1 = 25;
-    int* array1 = (int*)malloc(size1 * sizeof(int));
+    int size = 20000;
+    int* array = (int*)malloc(size * sizeof(int));
 
-    printf("Исходный массив (для сортировки по возрастанию):\n");
-    for (int i = 0; i < size1; i++) {
-        array1[i] = rand() % 100;
-        printf("%d ", array1[i]);
+    for (int i = 0; i < size; i++) {
+        array[i] = rand() - rand();
     }
-    printf("\n");
-    insertionSort(array1, size1, 1);
-    printf("Отсортированный массив:\n");
-    for (int i = 0; i < size1; i++) {
-        printf("%d ", array1[i]);
-    }
-    printf("\n\n");
 
-    free(array1);
+    clock_t start = clock();
+    long long swaps = insertionSort(array, size, 1);
+    clock_t end = clock();
+    double timeSpent = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-    int size2 = 25;
-    int* array2 = (int*)malloc(size2 * sizeof(int));
+    printf("Тест на %d элементах:\n", size);
+    printf("Время выполнения сортировки: %.4f сек.\n", timeSpent);
+    printf("Количество перестановок (сдвигов): %lld\n\n", swaps);
 
-    printf("Исходный массив (для сортировки по убыванию):\n");
-    for (int i = 0; i < size2; i++) {
-        array2[i] = rand() % 100;
-        printf("%d ", array2[i]);
-    }
-    printf("\n");
-    insertionSort(array2, size2, 2);
-    printf("Отсортированный массив:\n");
-    for (int i = 0; i < size2; i++) {
-        printf("%d ", array2[i]);
-    }
-    printf("\n\n");
-
-    free(array2);
+    free(array);
 
     return 0;
 }
